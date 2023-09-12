@@ -1,0 +1,34 @@
+id: template_chat_flow
+name: Template Chat Flow
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+  question:
+    type: string
+    is_chat_input: true
+  customerId:
+    type: string
+    default: "6"
+outputs:
+  answer:
+    type: string
+    reference: ${chat.output}
+    is_chat_output: true
+nodes:
+- name: retrieve_documents
+  type: python
+  source:
+    type: code
+    path: retrieve_documents.py
+  inputs: {}
+- name: question_embedding
+  type: python
+  source:
+    type: package
+    tool: promptflow.tools.embedding.embedding
+  inputs:
+    connection: cog-oai-overseas
+    input: ${inputs.question}
+    deployment_name: text-embedding-ada-002
